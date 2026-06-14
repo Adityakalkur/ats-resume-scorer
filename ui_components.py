@@ -15,7 +15,8 @@ import html as html_lib
 def inject_css() -> str:
     return """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+/* Non-blocking font load — swap ensures text shows immediately with system font */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
     --bg-main:   #0d0d0b;
@@ -393,6 +394,124 @@ hr { border-color: var(--border) !important; }
     text-align:center; padding:1.5rem 0 0.5rem;
     font-size:0.72rem; color:var(--dim); font-family:var(--mono);
     letter-spacing:0.04em; border-top:1px solid var(--border); margin-top:2rem;
+}
+
+/* ── Cross-platform / browser compatibility ─────────────────────────── */
+
+/* Prevent iOS Safari from auto-zooming text on focus */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* iOS smooth momentum scrolling in overflow containers */
+.resume-preview-box {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix Safari border-radius clipping with overflow:hidden on cards */
+.fix-card, .stat-card, .tc-alert, .results-header,
+.upload-card, .cg-cell, .kw-pill {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Prevent double-tap zoom on buttons and tabs (iOS) */
+[data-testid="stBaseButton-primary"],
+[data-testid="stBaseButton-secondary"],
+[data-testid="stTabs"] [role="tab"],
+[data-testid="stRadio"] label {
+    touch-action: manipulation;
+}
+
+/* ── Responsive: tablet (≤ 768 px) ─────────────────────────────────── */
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    /* Steps: hide connector lines, let steps wrap */
+    .step-line { display: none !important; }
+    .steps-wrap {
+        flex-wrap: wrap;
+        gap: 0.4rem !important;
+        padding: 0.6rem 0.75rem !important;
+        justify-content: flex-start;
+    }
+    .step { gap: 0.4rem; }
+    .step-label { font-size: 0.75rem; }
+
+    /* Stat cards: 2 columns on tablet */
+    .stat-cards { flex-wrap: wrap; }
+    .stat-card { flex: 1 1 calc(50% - 0.75rem); min-width: 120px; }
+}
+
+/* ── Responsive: mobile (≤ 480 px) ─────────────────────────────────── */
+@media (max-width: 480px) {
+    /* Results header stacks vertically */
+    .results-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+    .rh-score { text-align: left !important; }
+    .rh-score-num { font-size: 2.2rem !important; }
+
+    /* Criteria grid: single column */
+    .cg-row { flex-direction: column !important; }
+
+    /* Stat cards: single column */
+    .stat-cards { flex-direction: column !important; }
+    .stat-card { flex: 1 1 100% !important; }
+    .stat-val { font-size: 1.6rem !important; }
+
+    /* Minimum 44 px tap targets (Apple HIG) */
+    [data-testid="stBaseButton-primary"],
+    [data-testid="stBaseButton-secondary"] {
+        min-height: 44px !important;
+    }
+    [data-testid="stTabs"] [role="tab"] {
+        min-height: 40px !important;
+        padding: 0.55rem 0.6rem !important;
+        font-size: 0.76rem !important;
+    }
+    /* Radio buttons easier to tap */
+    [data-testid="stRadio"] label {
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Keyword pills wrap tighter */
+    .kw-pill { font-size: 0.7rem !important; padding: 0.18rem 0.5rem !important; }
+
+    /* Resume preview smaller on mobile */
+    .resume-preview-box {
+        max-height: 320px !important;
+        font-size: 0.76rem !important;
+    }
+
+    /* Fix card text slightly smaller */
+    .fix-card-text { font-size: 0.79rem !important; }
+
+    /* Feedback bullets */
+    .fb-list { font-size: 0.8rem !important; }
+}
+
+/* ── Scrollbar styling (Chrome/Edge/Safari) ──────────────────────────── */
+.resume-preview-box::-webkit-scrollbar { width: 4px; }
+.resume-preview-box::-webkit-scrollbar-track { background: var(--dim); border-radius: 2px; }
+.resume-preview-box::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* Firefox scrollbar */
+.resume-preview-box { scrollbar-width: thin; scrollbar-color: var(--accent) var(--dim); }
+
+/* ── Print / PDF export styles ──────────────────────────────────────── */
+@media print {
+    #MainMenu, header, footer, .tc-footer,
+    [data-testid="stSidebar"] { display: none !important; }
+    body { background: white !important; color: black !important; }
+    .block-container { max-width: 100% !important; }
 }
 </style>
 """

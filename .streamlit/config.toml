@@ -1,8 +1,12 @@
 [server]
 # Hard cap on uploaded file size (MB). Matches security.py MAX_RESUME_MB.
 maxUploadSize = 10
-# Don't expose the Streamlit "Made with Streamlit" footer branding in prod
-enableStaticServing = false
+# Required for cloud / headless deployments (no local browser)
+headless = true
+# Let Streamlit Cloud handle CORS — avoids mobile preflight failures
+enableCORS = false
+# Disable WebSocket compression — improves stability on mobile networks
+enableWebsocketCompression = false
 
 [browser]
 # Disable usage statistics reporting
