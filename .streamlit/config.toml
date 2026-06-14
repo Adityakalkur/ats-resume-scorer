@@ -1,0 +1,21 @@
+[server]
+# Hard cap on uploaded file size (MB). Matches security.py MAX_RESUME_MB.
+maxUploadSize = 10
+# Don't expose the Streamlit "Made with Streamlit" footer branding in prod
+enableStaticServing = false
+
+[browser]
+# Disable usage statistics reporting
+gatherUsageStats = false
+
+[runner]
+# Faster re-runs when files change
+fastReruns = true
+
+[theme]
+base = "dark"
+primaryColor = "#6C63FF"
+backgroundColor = "#0F0F14"
+secondaryBackgroundColor = "#16161E"
+textColor = "#E8E8F0"
+font = "sans serif"
