@@ -99,7 +99,14 @@ def _resolve_upload(source: str, uploaded_file, db_url: str, gd_url: str):
     """
     if source == "Upload file":
         if not uploaded_file:
-            st.markdown(ui.alert("Please upload a resume file first.", "error"), unsafe_allow_html=True)
+            st.markdown(
+                ui.alert(
+                    "No file received — the upload may have failed. "
+                    "On mobile, try switching to **Google Drive link** for a more reliable upload.",
+                    "error",
+                ),
+                unsafe_allow_html=True,
+            )
             st.stop()
         file_bytes = uploaded_file.read()
         filename = security.validate_filename(uploaded_file.name)
@@ -203,7 +210,7 @@ def _jd_input_widget(col) -> str:
         )
 
         jd_mode = st.radio(
-            "jd_mode",
+            "Job description input mode",
             ["Paste text", "Scrape from URL"],
             horizontal=True,
             label_visibility="collapsed",
@@ -300,7 +307,7 @@ def _resume_upload_widget(col, label: str = "Resume") -> tuple:
         )
         src_key = f"src_{label.lower().replace(' ', '_')}"
         source = st.radio(
-            src_key,
+            f"{label} source",
             ["Upload file", "Dropbox link", "Google Drive link"],
             horizontal=True,
             label_visibility="collapsed",
@@ -367,7 +374,7 @@ def _render_upload_single():
     mode_col, _ = st.columns([2, 3])
     with mode_col:
         mode = st.radio(
-            "mode",
+            "Analysis mode",
             ["Single Resume", "Compare Two Resumes"],
             horizontal=True,
             label_visibility="collapsed",
@@ -451,11 +458,12 @@ def _render_upload_compare():
     mode_col, _ = st.columns([2, 3])
     with mode_col:
         mode = st.radio(
-            "mode_cmp",
+            "Analysis mode",
             ["Single Resume", "Compare Two Resumes"],
             index=1,
             horizontal=True,
             label_visibility="collapsed",
+            key="mode_cmp",
         )
     if mode == "Single Resume":
         st.session_state["mode"] = "single"
